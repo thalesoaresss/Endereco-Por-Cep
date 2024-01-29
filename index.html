@@ -1,0 +1,70 @@
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<title>App Pesquisa Endereço</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<script>
+			async function getEndereco(cep){
+				let inputCep = document.getElementById('cep')
+				let r = await fetch('https://brasilaberto.com/api/v1/zipcode/' + cep)
+				let JSONObj = await r.json()
+
+				if(r.status == 200){
+					document.getElementById('rua').value = JSONObj['result'].street
+					document.getElementById('bairro').value = JSONObj['result'].district
+					document.getElementById('cidade').value = JSONObj['result'].city
+					document.getElementById('uf').value = JSONObj['result'].stateShortname
+				}else{
+					let elemento = document.getElementById('cep')
+					elemento.classList.add('is-invalid')
+					console.log('Endereço não encontrado')
+				}
+			}
+
+			function removeBG(){
+				let elemento = document.getElementById('cep')
+				console.log(elemento.value.length)
+				if(elemento.value.length <= 5){
+					elemento.classList.remove('is-invalid')
+				}
+			}
+		</script>
+	</head>
+	<body>
+		
+		<nav class="navbar navbar-light bg-light mb-4">
+			<div class="container">
+				<div class="navbar-brand mb-0 h1">
+					<h3>App Pesquisa Endereço</h3>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<div class="row form-group">
+				<div class="col-sm-3">
+					<input type="text" class="form-control" placeholder="CEP" onblur="getEndereco(this.value)" onkeydown="removeBG()" id="cep"/>
+					<div class="invalid-feedback" >
+						Verifique se o CEP digitado esta correto
+					</div>
+				</div>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" placeholder="Endereço" readonly id="rua"/>
+				</div>
+			</div>
+
+			<div class="row form-group">
+				<div class="col-sm-6">
+					<input type="text" class="form-control" placeholder="Bairro" readonly id="bairro"/>
+				</div>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" placeholder="Cidade" readonly id="cidade"/>
+				</div>
+
+				<div class="col-sm-2">
+					<input type="text" class="form-control" placeholder="UF" readonly id="uf"/>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
